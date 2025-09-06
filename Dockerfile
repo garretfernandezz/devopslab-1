@@ -1,13 +1,16 @@
-# Stage 1: Build the React app
-FROM node:16-alpine AS build
-WORKDIR /app
-COPY package*.json ./
-RUN npm install
-COPY . .
-RUN npm run build
+# Dockerfile.jenkins
+FROM jenkins/jenkins:lts
 
-# Stage 2: Serve with Nginx
-FROM nginx:alpine
-COPY --from=build /app/build /usr/share/nginx/html
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+USER root
+
+# Install Node.js and Docker
+RUN curl -fsSL https://deb.nodesource.com/setup_16.x | bash - \
+    && apt-get update && apt-get install -y \
+       nodejs \
+       docker.io \
+    && rm -rf /var/lib/apt/lists/*
+
+# Add Jenkins user to Docker group
+RUN usermod -aG docker jenkins
+
+USER jenkins
