@@ -9,12 +9,7 @@ services:
       - "50000:50000"
     volumes:
       - jenkins_home:/var/jenkins_home
-
-  app:
-    build: .
-    container_name: my-portfolio-app
-    ports:
-      - "3000:3000"
+      - /var/run/docker.sock:/var/run/docker.sock
 
 volumes:
   jenkins_home:
